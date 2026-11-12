@@ -1,0 +1,561 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xmile version="1.0" xmlns="http://docs.oasis-open.org/xmile/ns/XMILE/v1.0" xmlns:isee="http://iseesystems.com/XMILE">
+	<header>
+		<smile version="1.0" namespace="std, isee"/>
+		<name>IERevisedSFD</name>
+		<uuid>eed773d1-f4f7-4725-8d05-452b96d4f2dc</uuid>
+		<vendor>isee systems, inc.</vendor>
+		<product version="3.4.1" isee:build_number="3048" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+	</header>
+	<sim_specs isee:sim_duration="1.5" isee:run_prefix="Run" isee:simulation_delay="0.15" isee:restore_on_start="false" method="Euler" time_units="Year" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="true" isee:loop_scores="true" isee:loop_exhaustive_allowed="1000">
+		<start>0</start>
+		<stop>10</stop>
+		<dt reciprocal="true">4</dt>
+	</sim_specs>
+	<isee:prefs saved_runs="5" keep="false" show_module_prefix="true" live_update_on_drag="true" show_restore_buttons="false" layer="model" isee:design="Deluxe Prev-Next Blue Green Pastel" isee:design_custom="false" interface_scale_ui="true" interface_max_page_width="10000" interface_max_page_height="10000" interface_min_page_width="0" interface_min_page_height="0" rerun_on_structure_change="false" rifp="true"/>
+	<isee:multiplayer_settings include_chat="true" allow_observers="false" advance_time_increment="1" max_advance_time_in_ms="0" model_stops_when_players_drop="false" observer_start_page="home_page" enabled="false"/>
+	<isee:time_formats default_format="Builtin">
+		<isee:time_format name="Builtin" type="adaptive"/>
+	</isee:time_formats>
+	<default_format/>
+	<isee:sensi_specs_list active_index="0">
+		<isee:sensi_specs name="Sensitivity" method="sobol_sequence" runs="5">
+			<isee:variable starting_value="17500" ending_value="35000" type="incremental" min="17500" max="35000" seed="12345" name="Number_of_Houses_Available" num_samples="5"/>
+		</isee:sensi_specs>
+	</isee:sensi_specs_list>
+	<isee:optimizer_specs_list active_index="0">
+		<isee:optimizer_specs name="Optimization" method="Powell" use_additional_starts_file="false" additional_starts="0" report_interval="1" confidence_range="0"/>
+	</isee:optimizer_specs_list>
+	<isee:payoff_specs_list>
+		<isee:payoff_specs name="Payoff"/>
+	</isee:payoff_specs_list>
+	<model_units>
+		<unit name="People">
+			<eqn/>
+			<alias>person</alias>
+			<alias>persons</alias>
+		</unit>
+		<unit name="$">
+			<eqn/>
+			<alias>dollar</alias>
+			<alias>dollars</alias>
+		</unit>
+		<unit name="Dollars Per Year">
+			<eqn>$/Years</eqn>
+			<alias>Dollar Per Year</alias>
+			<alias>$ per year</alias>
+		</unit>
+		<unit name="Years">
+			<eqn/>
+			<alias>yr</alias>
+			<alias>year</alias>
+		</unit>
+		<unit name="Dimensionless">
+			<eqn>1</eqn>
+			<alias>dmnl</alias>
+			<alias>unitless</alias>
+		</unit>
+		<unit name="kilowatt hours per day">
+			<eqn>kWh/day</eqn>
+		</unit>
+		<unit name="kilowatts">
+			<eqn>kW</eqn>
+			<alias>kilowatt</alias>
+		</unit>
+	</model_units>
+	<model>
+		<variables>
+			<flow name="Change in Rate of\nConstruction">
+				<eqn>MAX(DELAY(&quot;Government_Intervention_(Interest_Rate_Easing)&quot;*Construction_Rate, 7 * Incentive_for_Supply_Policy, 0), Discrepancy_for_Rate_of_Construction)</eqn>
+				<units>Houses Per Year/Year</units>
+			</flow>
+			<stock name="Construction Rate">
+				<eqn>75000</eqn>
+				<inflow>Change_in_Rate_of_Construction</inflow>
+				<non_negative/>
+				<units>Houses Per Year</units>
+			</stock>
+			<aux name="Incentive for Supply Policy">
+				<eqn>1 / (.5 + (Demand_for_Housing * 0.25))</eqn>
+				<units/>
+			</aux>
+			<aux name="Government Intervention\n(Interest Rate Easing)">
+				<eqn>0.1</eqn>
+				<units>unitless</units>
+			</aux>
+			<aux name="Maximum Rate of\nConstruction">
+				<eqn>IF(Maximum_Number_of_Houses_that_can_be_built &gt; 0) THEN(85000) ELSE (0)</eqn>
+			</aux>
+			<aux name="Discrepancy for Rate\nof Construction">
+				<eqn>Maximum_Rate_of_Construction-Construction_Rate</eqn>
+				<units>unitless</units>
+			</aux>
+			<flow name="Increase in Houses Built">
+				<eqn>Construction_Rate/10</eqn>
+				<non_negative/>
+				<units>Houses/Year</units>
+			</flow>
+			<stock name="Number of Houses\nAvailable">
+				<eqn>17500</eqn>
+				<inflow>Increase_in_Houses_Built</inflow>
+				<non_negative/>
+				<units>Houses</units>
+			</stock>
+			<stock name="Number of Houses\nDemanded">
+				<eqn>1000</eqn>
+				<inflow>Change_in_Number_of_Houses_Demanded</inflow>
+				<non_negative/>
+				<units>Houses</units>
+			</stock>
+			<flow name="Change in Number of Houses Demanded">
+				<eqn>Maximum_Houses_Demanded*DELAYN(Demand_for_Housing,  0.5, 2, 0)</eqn>
+				<units>Houses/Year</units>
+			</flow>
+			<aux name="Demand for Housing">
+				<eqn>0.5 * (Rental_Price/(30000-9600)) + 0.5* (&quot;Government_Intervention_(Amount_in_Grants_per_person)&quot; / (40000 - 0)) - (0.5 * (&quot;Current_Price_to_Income_Ratio_(Housing_Unaffordability)&quot; / (20 - 6)))</eqn>
+			</aux>
+			<aux name="Rental Price">
+				<eqn>12000 + (12000 * 1/Rental_Demand)</eqn>
+				<units>Dollars Per Year</units>
+			</aux>
+			<aux name="Demand to Supply Ratio">
+				<eqn>Number_of_Houses_Demanded / Number_of_Houses_Available</eqn>
+			</aux>
+			<aux name="Housing Price">
+				<eqn>(200000 + (200000 * Demand_to_Supply_Ratio)) - &quot;Government_Intervention_(Amount_in_Grants_per_person)&quot;</eqn>
+			</aux>
+			<aux name="Maximum\nHouses Demanded">
+				<eqn>IF(Median_Annual_Income &gt; 70000) THEN(Eligible_Proportion_of_Singles_for_Government_Grants * &quot;Proportion_of_Singles_Aged_30_-_40&quot;) ELSE (1.5 *Eligible_Proportion_of_Singles_for_Government_Grants * &quot;Proportion_of_Singles_Aged_30_-_40&quot;)</eqn>
+			</aux>
+			<aux name="Current Price to Income Ratio\n(Housing Unaffordability)">
+				<eqn>Housing_Price/Median_Annual_Income</eqn>
+				<units>Years</units>
+			</aux>
+			<aux name="Rental Demand">
+				<eqn>&quot;Current_Price_to_Income_Ratio_(Housing_Unaffordability)&quot;</eqn>
+			</aux>
+			<aux name="Maximum Number of Houses that can be built">
+				<eqn>500000 - (Number_of_Houses_Available)</eqn>
+				<units>Houses</units>
+			</aux>
+			<flow name="Economic Growth Rate">
+				<eqn>(((3.6 / 100) + Immigration_Rate) * Gross_Domestic_Product)</eqn>
+				<non_negative/>
+				<units>Dollars Per Year/Year</units>
+			</flow>
+			<flow name="Immigration">
+				<eqn>Immigration_Rate * Singapore_Population</eqn>
+				<non_negative/>
+				<units>People/Year</units>
+			</flow>
+			<flow name="Births">
+				<eqn>Birth_Rate * Singapore_Population</eqn>
+				<non_negative/>
+				<units>People/Year</units>
+			</flow>
+			<flow name="Deaths">
+				<eqn>Death_Rate * Singapore_Population</eqn>
+				<non_negative/>
+				<units>People/Year</units>
+			</flow>
+			<stock name="Gross Domestic Product">
+				<eqn>(466790000000)</eqn>
+				<inflow>Economic_Growth_Rate</inflow>
+				<non_negative/>
+				<units>Dollars Per Year</units>
+			</stock>
+			<stock name="Singapore Population">
+				<eqn>6014723</eqn>
+				<inflow>Births</inflow>
+				<inflow>Immigration</inflow>
+				<outflow>Deaths</outflow>
+				<non_negative/>
+				<units>People</units>
+			</stock>
+			<aux name="Median Annual Income">
+				<eqn>60704 + (Economic_Growth_Rate/6014723)</eqn>
+				<units>Dollars Per Year</units>
+			</aux>
+			<aux name="Proportion of\nSingles Aged 30 - 40">
+				<eqn>0.0534 * Singapore_Population</eqn>
+			</aux>
+			<aux name="Immigration Rate">
+				<eqn>(4.532/1000)</eqn>
+			</aux>
+			<aux name="Death Rate">
+				<eqn>5.2/1000</eqn>
+			</aux>
+			<aux name="Birth Rate">
+				<eqn>8.33/1000</eqn>
+			</aux>
+			<aux name="Eligible Proportion of Singles\nfor Government Grants">
+				<eqn>7.5/100</eqn>
+			</aux>
+			<aux name="Government\nIntervention (Amount in Grants per person)">
+				<eqn>40000</eqn>
+				<units>Dollars</units>
+			</aux>
+		</variables>
+		<views>
+			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
+				<text_box color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+				<isee:loop_indicator color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+				<numeric_display color="white" background="white" font_size="12pt" border_width="thin" border_style="solid" isee:transparent="false" isee:show_divider="true" isee:show_bounding_box="true" label_side="left"/>
+				<graph color="black" background="white" font_size="12pt" axis_color="#666666" grid_color="#C8C8C8" isee:graph_area_color="white" legend_position="bottom" isee:transparent="false" isee:hide_border="false" axis_title_font_style="normal" axis_title_font_weight="normal" axis_title_text_decoration="none" axis_title_text_align="center" axis_title_vertical_text_align="center" axis_title_font_color="black" axis_title_font_family="Arial" axis_title_font_size="12pt" axis_title_text_padding="2" axis_title_text_border_color="black" axis_title_text_border_width="thin" axis_title_text_border_style="none" axis_label_font_style="normal" axis_label_font_weight="normal" axis_label_text_decoration="none" axis_label_text_align="center" axis_label_vertical_text_align="center" axis_label_font_color="black" axis_label_font_family="Arial" axis_label_font_size="9pt" axis_label_text_padding="2" axis_label_text_border_color="black" axis_label_text_border_width="thin" axis_label_text_border_style="none">
+					<isee:series_styles>
+						<isee:series_style color="blue" thickness="1"/>
+						<isee:series_style color="red" thickness="1" pen_style="dot_dashed"/>
+						<isee:series_style color="fuchsia" thickness="1" pen_style="dotted"/>
+						<isee:series_style color="#008F44" thickness="1" pen_style="dashed"/>
+						<isee:series_style color="#FF7F00" thickness="1"/>
+						<isee:series_style color="#7F00FF" thickness="1" pen_style="dot_dashed"/>
+						<isee:series_style color="#0CA0FF" thickness="1" pen_style="dotted"/>
+						<isee:series_style color="lime" thickness="1" pen_style="dashed"/>
+						<isee:series_style color="#FF007F" thickness="1"/>
+						<isee:series_style color="aqua" thickness="1" pen_style="dot_dashed"/>
+						<isee:series_style color="#F586FF" thickness="1" pen_style="dotted"/>
+						<isee:series_style color="black" thickness="1" pen_style="dashed"/>
+						<isee:series_style color="#C8C8C8" thickness="1"/>
+					</isee:series_styles>
+				</graph>
+				<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="summed" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
+				<button color="black" background="#E0E0E0" font_size="12pt" border_width="thin" border_style="solid" transparent="false" corner_radius="0" isee:flat="false" icon_side="top" isee:highlight_on_hover="false" isee:highlight_color="#959595"/>
+				<isee:annotation color="black" background="#E0E0E0" font_size="12pt" border_width="thin" border_style="solid" transparent="false" corner_radius="0" isee:flat="false" icon_side="top" isee:highlight_on_hover="false" isee:highlight_color="#959595" popup_corner_radius="0" popup_background_color="#FFFECF"/>
+				<slider color="#66CC66" background="#E0E0E0" font_size="12pt" num_ticks="3" label_side="top" wrap_title="true" vertical="false" isee:fancy_appearance="false" isee:show_hover_tip="when_deciding" input_expands="true" input_width="100"/>
+				<isee:stacked_container color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" padding="6 8" border_color="#999999" border_width="thin" border_style="solid" item_spacing="0" corner_radius="4" selected_item_color="black" selected_item_background="white" item_background="#DDDDDD" transparent_bg="false"/>
+				<isee:dual_slider color="#66CC66" background="silver" font_size="12pt" num_ticks="3" label_side="top" wrap_title="true" isee:show_hover_tip="when_deciding" input_expands="true" input_width="100"/>
+				<isee:sim_speed_slider color="black" background="white"/>
+				<isee:time_slider color="#E95F74" background="silver"/>
+				<isee:pie_input color="black" background="white" font_size="12pt" legend_position="bottom" isee:transparent="false"/>
+				<knob color="#66CC66" background="#E0E0E0" font_size="12pt" label_side="bottom" wrap_title="true"/>
+				<numeric_input color="black" background="#E0E0E0" font_size="12pt" label_side="left" wrap_title="true" input_expands="false" input_width="100"/>
+				<switch color="black" background="#E0E0E0" font_size="12pt" label_side="top" wrap_title="true" isee:appearance="switch" isee:on_color="green"/>
+				<options color="black" background="white" appearance="radio-buttons" arrangement="vertical"/>
+				<graphical_input color="black" background="#E0E0E0" font_size="12pt" isee:show_hover_tip="true"/>
+				<group_input color="black" background="#E0E0E0" font_size="12pt"/>
+				<lamp color="black" background="white" font_size="9pt"/>
+				<gauge color="black" background="white" font_size="9pt" needle_color="#F09F72" bar_color="#EEEEEE" bar_progress_color="black" appearance="radial" num_major_ticks="11" num_minor_ticks="11" show_numeric_value="true"/>
+				<isee:spatial_map color="black" background="white" font_size="12pt"/>
+				<isee:animation_object color="black" background="white" font_size="12pt"/>
+				<isee:navigation_widget color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" padding="6 8" border_color="#999999" border_width="thin" border_style="solid" item_spacing="6" appearance="tabs" corner_radius="4" selected_item_color="black" selected_item_background="white" item_background="#DDDDDD" transparent_bg="false"/>
+				<isee:shape color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid" opacity="1" transparent_background="true" corner_radius="1"/>
+				<isee:selector color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
+				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
+			</style>
+			<view isee:show_pages="false" background="white" page_width="1035" page_height="795" isee:page_cols="3" isee:page_rows="2" isee:scroll_x="354.167" isee:scroll_y="252.5" zoom="120" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
+					<stock color="blue" background="white" font_color="blue" font_size="9pt" label_side="top">
+						<shape type="rectangle" width="45" height="35"/>
+					</stock>
+					<flow color="blue" background="white" font_color="blue" font_size="9pt" label_side="bottom">
+						<shape type="circle" radius="18"/>
+					</flow>
+					<isee:placeholder color="#228B22" background="white" font_color="#228B22" font_size="9pt" label_side="bottom"/>
+					<module color="blue" background="white" font_color="blue" font_size="9pt" label_side="top">
+						<shape type="rectangle" width="55" height="45"/>
+					</module>
+					<aux color="blue" background="white" font_color="blue" font_size="9pt" label_side="bottom">
+						<shape type="circle" radius="18"/>
+					</aux>
+					<group color="red" background="white" font_color="red" font_size="9pt"/>
+					<connector color="#FF007F" background="white" font_color="#FF007F" font_size="9pt" isee:thickness="1"/>
+					<text_box color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+					<isee:loop_indicator color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+					<numeric_display color="white" background="white" font_size="12pt" border_width="thin" border_style="solid" isee:transparent="false" isee:show_divider="true" isee:show_bounding_box="true" label_side="left"/>
+					<graph color="black" background="white" font_size="12pt" axis_color="#666666" grid_color="#C8C8C8" isee:graph_area_color="white" legend_position="bottom" isee:transparent="false" isee:hide_border="false" axis_title_font_style="normal" axis_title_font_weight="normal" axis_title_text_decoration="none" axis_title_text_align="center" axis_title_vertical_text_align="center" axis_title_font_color="black" axis_title_font_family="Arial" axis_title_font_size="12pt" axis_title_text_padding="2" axis_title_text_border_color="black" axis_title_text_border_width="thin" axis_title_text_border_style="none" axis_label_font_style="normal" axis_label_font_weight="normal" axis_label_text_decoration="none" axis_label_text_align="center" axis_label_vertical_text_align="center" axis_label_font_color="black" axis_label_font_family="Arial" axis_label_font_size="9pt" axis_label_text_padding="2" axis_label_text_border_color="black" axis_label_text_border_width="thin" axis_label_text_border_style="none">
+						<isee:series_styles>
+							<isee:series_style color="blue" thickness="1"/>
+							<isee:series_style color="red" thickness="1" pen_style="dot_dashed"/>
+							<isee:series_style color="fuchsia" thickness="1" pen_style="dotted"/>
+							<isee:series_style color="#008F44" thickness="1" pen_style="dashed"/>
+							<isee:series_style color="#FF7F00" thickness="1"/>
+							<isee:series_style color="#7F00FF" thickness="1" pen_style="dot_dashed"/>
+							<isee:series_style color="#0CA0FF" thickness="1" pen_style="dotted"/>
+							<isee:series_style color="lime" thickness="1" pen_style="dashed"/>
+							<isee:series_style color="#FF007F" thickness="1"/>
+							<isee:series_style color="aqua" thickness="1" pen_style="dot_dashed"/>
+							<isee:series_style color="#F586FF" thickness="1" pen_style="dotted"/>
+							<isee:series_style color="black" thickness="1" pen_style="dashed"/>
+							<isee:series_style color="#C8C8C8" thickness="1"/>
+						</isee:series_styles>
+					</graph>
+					<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="summed" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
+				</style>
+				<flow color="black" font_color="black" label_side="bottom" x="616.068" y="623.065" name="Change in Rate of\nConstruction">
+					<pts>
+						<pt x="533.506" y="623.065"/>
+						<pt x="686.631" y="623.065"/>
+					</pts>
+				</flow>
+				<stock color="black" font_color="black" label_side="right" x="709.131" y="623.065" name="Construction Rate"/>
+				<connector uid="1" angle="154.093">
+					<from>Construction_Rate</from>
+					<to>Change_in_Rate_of_Construction</to>
+				</connector>
+				<aux color="black" font_color="black" label_side="top" x="544.667" y="573.232" name="Government Intervention\n(Interest Rate Easing)"/>
+				<connector uid="3" delay_mark="true" angle="325.088">
+					<from>&quot;Government_Intervention_(Interest_Rate_Easing)&quot;</from>
+					<to>Change_in_Rate_of_Construction</to>
+				</connector>
+				<aux color="black" font_color="black" label_side="top" x="709.131" y="540.982" name="Maximum Rate of\nConstruction"/>
+				<aux color="black" font_color="black" label_side="right" x="670.215" y="573.232" name="Discrepancy for Rate\nof Construction"/>
+				<connector uid="4" angle="169.896">
+					<from>Maximum_Rate_of_Construction</from>
+					<to>Discrepancy_for_Rate_of_Construction</to>
+				</connector>
+				<connector uid="5" angle="137.917">
+					<from>Construction_Rate</from>
+					<to>Discrepancy_for_Rate_of_Construction</to>
+				</connector>
+				<connector uid="6" angle="192.946">
+					<from>Discrepancy_for_Rate_of_Construction</from>
+					<to>Change_in_Rate_of_Construction</to>
+				</connector>
+				<aux color="black" font_color="black" label_side="top" x="610.069" y="522.982" name="Incentive for Supply Policy"/>
+				<flow color="black" font_color="black" x="605.774" y="729.5" name="Increase in Houses Built">
+					<pts>
+						<pt x="525.215" y="729.5"/>
+						<pt x="686.333" y="729.5"/>
+					</pts>
+				</flow>
+				<connector uid="7" angle="225.841">
+					<from>Construction_Rate</from>
+					<to>Increase_in_Houses_Built</to>
+				</connector>
+				<stock color="black" font_color="black" x="708.833" y="729.5" name="Number of Houses\nAvailable"/>
+				<stock color="#00AA7F" font_color="#00AA7F" label_side="top" x="942.548" y="626.899" name="Number of Houses\nDemanded"/>
+				<flow color="#00AA7F" font_color="#00AA7F" label_side="bottom" x="1044.21" y="626.899" name="Change in Number of Houses Demanded">
+					<pts>
+						<pt x="1135.37" y="626.899"/>
+						<pt x="965.048" y="626.899"/>
+					</pts>
+				</flow>
+				<aux color="#00AA7F" font_color="#00AA7F" label_side="bottom" x="1195.89" y="626.899" name="Demand for Housing"/>
+				<connector uid="12" delay_mark="true" angle="157.142">
+					<from>Demand_for_Housing</from>
+					<to>Change_in_Number_of_Houses_Demanded</to>
+				</connector>
+				<connector uid="14" angle="188.045">
+					<from>Rental_Price</from>
+					<to>Demand_for_Housing</to>
+				</connector>
+				<aux color="#00AA7F" font_color="#00AA7F" label_side="top" x="1286.6" y="558.333" name="Rental Price"/>
+				<aux color="#00AA7F" font_color="#00AA7F" x="925.333" y="696.333" name="Demand to Supply Ratio"/>
+				<connector uid="29" angle="20.7849">
+					<from>Number_of_Houses_Available</from>
+					<to>Demand_to_Supply_Ratio</to>
+				</connector>
+				<connector uid="30" angle="267.807">
+					<from>Number_of_Houses_Demanded</from>
+					<to>Demand_to_Supply_Ratio</to>
+				</connector>
+				<aux color="#00AA7F" font_color="#00AA7F" label_side="top" x="1155.55" y="702" name="Housing Price"/>
+				<connector uid="31" angle="358.59">
+					<from>Demand_to_Supply_Ratio</from>
+					<to>Housing_Price</to>
+				</connector>
+				<stacked_container uid="32" x="459.631" y="795.5" width="350" height="250">
+					<graph width="350" height="250" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
+						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
+							<entity name="Housing_Price"/>
+						</plot>
+					</graph>
+				</stacked_container>
+				<stacked_container uid="33" x="821.119" y="795.5" width="350" height="250">
+					<graph width="350" height="250" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
+						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
+							<entity name="Number_of_Houses_Available"/>
+						</plot>
+					</graph>
+				</stacked_container>
+				<stacked_container uid="46" x="1182.75" y="795.5" width="350" height="250">
+					<graph width="350" height="250" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
+						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
+							<entity name="Number_of_Houses_Demanded"/>
+						</plot>
+					</graph>
+				</stacked_container>
+				<aux color="#00AA7F" font_color="#00AA7F" label_side="left" x="1044.21" y="550.5" name="Maximum\nHouses Demanded"/>
+				<connector uid="50" angle="270">
+					<from>Maximum_Houses_Demanded</from>
+					<to>Change_in_Number_of_Houses_Demanded</to>
+				</connector>
+				<connector uid="54" angle="306.656">
+					<from>
+						<alias uid="55"/>
+					</from>
+					<to>Incentive_for_Supply_Policy</to>
+				</connector>
+				<aux color="#00AA7F" font_color="#00AA7F" label_side="right" x="1353.43" y="632.232" name="Current Price to Income Ratio\n(Housing Unaffordability)"/>
+				<connector uid="63" angle="178.061">
+					<from>&quot;Current_Price_to_Income_Ratio_(Housing_Unaffordability)&quot;</from>
+					<to>Demand_for_Housing</to>
+				</connector>
+				<stacked_container uid="64" x="275" y="920.5">
+					<graph width="350" height="250" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
+						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
+							<entity name="Increase_in_Houses_Built"/>
+							<scale max="10000"/>
+						</plot>
+					</graph>
+				</stacked_container>
+				<aux color="#00AA7F" font_color="#00AA7F" label_side="top" x="1357.75" y="540.333" name="Rental Demand"/>
+				<connector uid="66" angle="63.3152">
+					<from>&quot;Current_Price_to_Income_Ratio_(Housing_Unaffordability)&quot;</from>
+					<to>Rental_Demand</to>
+				</connector>
+				<connector uid="67" angle="153.048">
+					<from>Rental_Demand</from>
+					<to>Rental_Price</to>
+				</connector>
+				<connector uid="70" angle="314.608">
+					<from>Housing_Price</from>
+					<to>&quot;Current_Price_to_Income_Ratio_(Housing_Unaffordability)&quot;</to>
+				</connector>
+				<aux color="black" font_color="black" label_side="top" x="812.119" y="543" name="Maximum Number of Houses that can be built"/>
+				<connector uid="77" angle="175.249">
+					<from>Maximum_Number_of_Houses_that_can_be_built</from>
+					<to>Maximum_Rate_of_Construction</to>
+				</connector>
+				<connector uid="79" angle="20.3678">
+					<from>Number_of_Houses_Available</from>
+					<to>Maximum_Number_of_Houses_that_can_be_built</to>
+				</connector>
+				<flow label_side="bottom" x="1216.25" y="285.5" name="Economic Growth Rate">
+					<pts>
+						<pt x="1128.75" y="285.5"/>
+						<pt x="1303.75" y="285.5"/>
+					</pts>
+				</flow>
+				<flow label_side="top" x="861.381" y="278.559" name="Immigration">
+					<pts>
+						<pt x="861.381" y="206.69"/>
+						<pt x="861.381" y="350.428"/>
+					</pts>
+				</flow>
+				<flow x="754.622" y="386.25" name="Births">
+					<pts>
+						<pt x="688.125" y="386.25"/>
+						<pt x="821.119" y="386.25"/>
+					</pts>
+				</flow>
+				<flow x="943.178" y="381.69" name="Deaths">
+					<pts>
+						<pt x="886.119" y="381.69"/>
+						<pt x="1024.24" y="381.69"/>
+					</pts>
+				</flow>
+				<stock label_side="bottom" x="1326.25" y="293" name="Gross Domestic Product"/>
+				<connector uid="38" angle="103.853">
+					<from>Gross_Domestic_Product</from>
+					<to>Economic_Growth_Rate</to>
+				</connector>
+				<stock label_side="bottom" x="821.119" y="350.428" width="65" height="48" name="Singapore Population"/>
+				<connector uid="17" angle="108.62">
+					<from>Singapore_Population</from>
+					<to>Births</to>
+				</connector>
+				<connector uid="18" angle="55.4884">
+					<from>Singapore_Population</from>
+					<to>Deaths</to>
+				</connector>
+				<connector uid="21" angle="107.59">
+					<from>Singapore_Population</from>
+					<to>Immigration</to>
+				</connector>
+				<aux x="1204.89" y="415.547" width="18" height="18" name="Median Annual Income"/>
+				<connector uid="40" angle="181.833">
+					<from>Economic_Growth_Rate</from>
+					<to>Median_Annual_Income</to>
+				</connector>
+				<aux x="907.298" y="457.547" name="Proportion of\nSingles Aged 30 - 40"/>
+				<connector uid="24" angle="332.587">
+					<from>Singapore_Population</from>
+					<to>&quot;Proportion_of_Singles_Aged_30_-_40&quot;</to>
+				</connector>
+				<aux label_side="right" x="1009.05" y="278.559" name="Immigration Rate"/>
+				<connector uid="22" angle="180">
+					<from>Immigration_Rate</from>
+					<to>Immigration</to>
+				</connector>
+				<connector uid="65" angle="43.8542">
+					<from>Immigration_Rate</from>
+					<to>Economic_Growth_Rate</to>
+				</connector>
+				<aux x="1005.17" y="424.547" name="Death Rate"/>
+				<connector uid="20" angle="145.341">
+					<from>Death_Rate</from>
+					<to>Deaths</to>
+				</connector>
+				<aux x="620.833" y="415.547" width="18" height="18" name="Birth Rate"/>
+				<connector uid="19" angle="17.0611">
+					<from>Birth_Rate</from>
+					<to>Births</to>
+				</connector>
+				<connector uid="90" angle="181.45">
+					<from>Median_Annual_Income</from>
+					<to>Maximum_Houses_Demanded</to>
+				</connector>
+				<connector uid="92" angle="24.2464">
+					<from>Median_Annual_Income</from>
+					<to>&quot;Current_Price_to_Income_Ratio_(Housing_Unaffordability)&quot;</to>
+				</connector>
+				<connector uid="93" angle="9.94611">
+					<from>&quot;Proportion_of_Singles_Aged_30_-_40&quot;</from>
+					<to>Maximum_Houses_Demanded</to>
+				</connector>
+				<stacked_container uid="94" x="1685.83" y="795.5" width="350" height="250">
+					<graph width="350" height="250" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
+						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
+							<entity name="Singapore_Population"/>
+						</plot>
+					</graph>
+				</stacked_container>
+				<stacked_container uid="97" x="1565.58" y="1225.67">
+					<graph width="350" height="250" comparative="true" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
+						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
+							<entity name="Number_of_Houses_Available"/>
+						</plot>
+					</graph>
+				</stacked_container>
+				<stacked_container uid="96" x="884.167" y="1341.67">
+					<graph width="350" height="250" comparative="true" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
+						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
+							<entity name='"Current_Price_to_Income_Ratio_(Housing_Unaffordability)"'/>
+						</plot>
+					</graph>
+				</stacked_container>
+				<stacked_container uid="95" x="346" y="1216.67" width="350" height="250">
+					<graph width="350" height="250" comparative="true" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
+						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
+							<entity name="Housing_Price"/>
+						</plot>
+					</graph>
+				</stacked_container>
+				<aux color="#00AA7F" font_color="#00AA7F" x="1155.55" y="522.982" name="Eligible Proportion of Singles\nfor Government Grants"/>
+				<connector uid="102" angle="168.17">
+					<from>Eligible_Proportion_of_Singles_for_Government_Grants</from>
+					<to>Maximum_Houses_Demanded</to>
+				</connector>
+				<aux color="#00AA7F" font_color="#00AA7F" label_side="bottom" x="1272.6" y="668.565" name="Government\nIntervention (Amount in Grants per person)"/>
+				<connector uid="100" angle="128.162">
+					<from>&quot;Government_Intervention_(Amount_in_Grants_per_person)&quot;</from>
+					<to>Demand_for_Housing</to>
+				</connector>
+				<connector uid="101" angle="195.941">
+					<from>&quot;Government_Intervention_(Amount_in_Grants_per_person)&quot;</from>
+					<to>Housing_Price</to>
+				</connector>
+				<connector uid="2" angle="273.431">
+					<from>Incentive_for_Supply_Policy</from>
+					<to>Change_in_Rate_of_Construction</to>
+				</connector>
+				<alias color="#00AA7F" font_style="italic" font_color="#00AA7F" label_side="top" uid="55" x="503.667" y="495.982" width="18" height="18">
+					<of>Demand_for_Housing</of>
+				</alias>
+			</view>
+		</views>
+	</model>
+</xmile>
+

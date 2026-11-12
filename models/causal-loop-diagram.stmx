@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xmile version="1.0" xmlns="http://docs.oasis-open.org/xmile/ns/XMILE/v1.0" xmlns:isee="http://iseesystems.com/XMILE">
+	<header>
+		<smile version="1.0" namespace="std, isee"/>
+		<name>CLD_Final_T04H</name>
+		<uuid>1ca000be-42cd-4e00-be43-40b4f131bdc3</uuid>
+		<vendor>isee systems, inc.</vendor>
+		<product version="3.4.1" isee:build_number="3048" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+	</header>
+	<sim_specs isee:sim_duration="1.5" isee:run_prefix="Run" isee:simulation_delay="0.125" isee:restore_on_start="false" method="Euler" time_units="Months" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="true" isee:loop_scores="true" isee:loop_exhaustive_allowed="1000">
+		<start>0</start>
+		<stop>12</stop>
+		<dt reciprocal="true">4</dt>
+	</sim_specs>
+	<isee:prefs saved_runs="5" keep="false" show_module_prefix="true" live_update_on_drag="true" show_restore_buttons="false" layer="cld" isee:design="Deluxe Prev-Next Blue Green Pastel" isee:design_custom="false" interface_scale_ui="true" interface_max_page_width="10000" interface_max_page_height="10000" interface_min_page_width="0" interface_min_page_height="0" rerun_on_structure_change="false" rifp="true"/>
+	<isee:multiplayer_settings include_chat="true" allow_observers="false" advance_time_increment="1" max_advance_time_in_ms="0" model_stops_when_players_drop="false" observer_start_page="home_page" enabled="false"/>
+	<isee:time_formats default_format="Builtin">
+		<isee:time_format name="Builtin" type="adaptive"/>
+	</isee:time_formats>
+	<default_format/>
+	<model_units/>
+	<model>
+		<variables>
+			<aux name="Housing Supply">
+				<eqn>NAN(Incentive_for_Supply_Policy,Interest_Rate)</eqn>
+				<isee:delay_aux/>
+			</aux>
+			<aux name="Interest Rate">
+				<eqn>NAN(Housing_Demand)</eqn>
+				<isee:delay_aux/>
+			</aux>
+			<aux name="Housing Price">
+				<eqn>NAN(Housing_Supply,Housing_Demand,Price_Policy)</eqn>
+				<isee:delay_aux/>
+			</aux>
+			<aux name="Housing Affordability">
+				<eqn>NAN(Housing_Price)</eqn>
+				<isee:delay_aux/>
+			</aux>
+			<aux name="Housing Demand">
+				<eqn>NAN(Housing_Affordability,Population,Rental_Price,Disposable_Income)</eqn>
+				<isee:delay_aux/>
+			</aux>
+			<aux name="Incentive for Supply Policy">
+				<eqn>NAN(Housing_Demand,Housing_Affordability)</eqn>
+				<isee:delay_aux/>
+			</aux>
+			<aux name="Disposable Income">
+				<eqn>NAN(Economic_Growth)</eqn>
+				<isee:delay_aux/>
+			</aux>
+			<aux name="Economic Growth">
+				<eqn>NAN(Immigration)</eqn>
+				<isee:delay_aux/>
+			</aux>
+			<aux name="Rental Demand">
+				<eqn>NAN(Housing_Affordability)</eqn>
+				<isee:delay_aux/>
+			</aux>
+			<aux name="Rental Price">
+				<eqn>NAN(Rental_Demand)</eqn>
+				<isee:delay_aux/>
+			</aux>
+			<aux name="Population">
+				<eqn>NAN(Immigration)</eqn>
+				<isee:delay_aux/>
+			</aux>
+			<aux name="Immigration">
+				<eqn>NAN(Housing_Affordability)</eqn>
+				<isee:delay_aux/>
+			</aux>
+			<aux name="Price Policy">
+				<eqn>NAN(Incentive_for_Price_Policy)</eqn>
+				<isee:delay_aux/>
+			</aux>
+			<aux name="Incentive for Price Policy">
+				<eqn>NAN(Housing_Price)</eqn>
+				<isee:delay_aux/>
+			</aux>
+		</variables>
+		<views>
+			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
+				<text_box color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+				<isee:loop_indicator color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+				<numeric_display color="white" background="white" font_size="12pt" border_width="thin" border_style="solid" isee:transparent="false" isee:show_divider="true" isee:show_bounding_box="true" label_side="left"/>
+				<graph color="black" background="white" font_size="12pt" axis_color="#666666" grid_color="#C8C8C8" isee:graph_area_color="white" legend_position="bottom" isee:transparent="false" isee:hide_border="false" axis_title_font_style="normal" axis_title_font_weight="normal" axis_title_text_decoration="none" axis_title_text_align="center" axis_title_vertical_text_align="center" axis_title_font_color="black" axis_title_font_family="Arial" axis_title_font_size="12pt" axis_title_text_padding="2" axis_title_text_border_color="black" axis_title_text_border_width="thin" axis_title_text_border_style="none" axis_label_font_style="normal" axis_label_font_weight="normal" axis_label_text_decoration="none" axis_label_text_align="center" axis_label_vertical_text_align="center" axis_label_font_color="black" axis_label_font_family="Arial" axis_label_font_size="9pt" axis_label_text_padding="2" axis_label_text_border_color="black" axis_label_text_border_width="thin" axis_label_text_border_style="none">
+					<isee:series_styles>
+						<isee:series_style color="blue" thickness="1"/>
+						<isee:series_style color="red" thickness="1" pen_style="dot_dashed"/>
+						<isee:series_style color="fuchsia" thickness="1" pen_style="dotted"/>
+						<isee:series_style color="#008F44" thickness="1" pen_style="dashed"/>
+						<isee:series_style color="#FF7F00" thickness="1"/>
+						<isee:series_style color="#7F00FF" thickness="1" pen_style="dot_dashed"/>
+						<isee:series_style color="#0CA0FF" thickness="1" pen_style="dotted"/>
+						<isee:series_style color="lime" thickness="1" pen_style="dashed"/>
+						<isee:series_style color="#FF007F" thickness="1"/>
+						<isee:series_style color="aqua" thickness="1" pen_style="dot_dashed"/>
+						<isee:series_style color="#F586FF" thickness="1" pen_style="dotted"/>
+						<isee:series_style color="black" thickness="1" pen_style="dashed"/>
+						<isee:series_style color="#C8C8C8" thickness="1"/>
+					</isee:series_styles>
+				</graph>
+				<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="summed" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
+				<button color="black" background="#E0E0E0" font_size="12pt" border_width="thin" border_style="solid" transparent="false" corner_radius="0" isee:flat="false" icon_side="top" isee:highlight_on_hover="false" isee:highlight_color="#959595"/>
+				<isee:annotation color="black" background="#E0E0E0" font_size="12pt" border_width="thin" border_style="solid" transparent="false" corner_radius="0" isee:flat="false" icon_side="top" isee:highlight_on_hover="false" isee:highlight_color="#959595" popup_corner_radius="0" popup_background_color="#FFFECF"/>
+				<slider color="#66CC66" background="#E0E0E0" font_size="12pt" num_ticks="3" label_side="top" wrap_title="true" vertical="false" isee:fancy_appearance="false" isee:show_hover_tip="when_deciding" input_expands="true" input_width="100"/>
+				<isee:stacked_container color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" padding="6 8" border_color="#999999" border_width="thin" border_style="solid" item_spacing="0" corner_radius="4" selected_item_color="black" selected_item_background="white" item_background="#DDDDDD" transparent_bg="false"/>
+				<isee:dual_slider color="#66CC66" background="silver" font_size="12pt" num_ticks="3" label_side="top" wrap_title="true" isee:show_hover_tip="when_deciding" input_expands="true" input_width="100"/>
+				<isee:sim_speed_slider color="black" background="white"/>
+				<isee:time_slider color="#E95F74" background="silver"/>
+				<isee:pie_input color="black" background="white" font_size="12pt" legend_position="bottom" isee:transparent="false"/>
+				<knob color="#66CC66" background="#E0E0E0" font_size="12pt" label_side="bottom" wrap_title="true"/>
+				<numeric_input color="black" background="#E0E0E0" font_size="12pt" label_side="left" wrap_title="true" input_expands="false" input_width="100"/>
+				<switch color="black" background="#E0E0E0" font_size="12pt" label_side="top" wrap_title="true" isee:appearance="switch" isee:on_color="green"/>
+				<options color="black" background="white" appearance="radio-buttons" arrangement="vertical"/>
+				<graphical_input color="black" background="#E0E0E0" font_size="12pt" isee:show_hover_tip="true"/>
+				<group_input color="black" background="#E0E0E0" font_size="12pt"/>
+				<lamp color="black" background="white" font_size="9pt"/>
+				<gauge color="black" background="white" font_size="9pt" needle_color="#F09F72" bar_color="#EEEEEE" bar_progress_color="black" appearance="radial" num_major_ticks="11" num_minor_ticks="11" show_numeric_value="true"/>
+				<isee:spatial_map color="black" background="white" font_size="12pt"/>
+				<isee:animation_object color="black" background="white" font_size="12pt"/>
+				<isee:navigation_widget color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" padding="6 8" border_color="#999999" border_width="thin" border_style="solid" item_spacing="6" appearance="tabs" corner_radius="4" selected_item_color="black" selected_item_background="white" item_background="#DDDDDD" transparent_bg="false"/>
+				<isee:shape color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid" opacity="1" transparent_background="true" corner_radius="1"/>
+				<isee:selector color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
+				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
+			</style>
+			<view isee:show_pages="false" background="white" isee:converter_size="name_only" page_width="818" page_height="571" isee:page_rows="2" isee:scroll_y="132.222" zoom="180" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
+					<stock color="blue" background="white" font_color="blue" font_size="9pt" label_side="top">
+						<shape type="rectangle" width="45" height="35"/>
+					</stock>
+					<flow color="blue" background="white" font_color="blue" font_size="9pt" label_side="bottom">
+						<shape type="circle" radius="18"/>
+					</flow>
+					<isee:placeholder color="#228B22" background="white" font_color="#228B22" font_size="9pt" label_side="bottom"/>
+					<module color="blue" background="white" font_color="blue" font_size="9pt" label_side="top">
+						<shape type="rectangle" width="55" height="45"/>
+					</module>
+					<aux color="blue" background="white" font_color="blue" font_size="9pt" label_side="bottom">
+						<shape type="name_only"/>
+					</aux>
+					<group color="red" background="white" font_color="red" font_size="9pt"/>
+					<connector color="#FF007F" background="white" font_color="#FF007F" font_size="9pt" isee:thickness="1"/>
+					<text_box color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+					<isee:loop_indicator color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+					<numeric_display color="white" background="white" font_size="12pt" border_width="thin" border_style="solid" isee:transparent="false" isee:show_divider="true" isee:show_bounding_box="true" label_side="left"/>
+					<graph color="black" background="white" font_size="12pt" axis_color="#666666" grid_color="#C8C8C8" isee:graph_area_color="white" legend_position="bottom" isee:transparent="false" isee:hide_border="false" axis_title_font_style="normal" axis_title_font_weight="normal" axis_title_text_decoration="none" axis_title_text_align="center" axis_title_vertical_text_align="center" axis_title_font_color="black" axis_title_font_family="Arial" axis_title_font_size="12pt" axis_title_text_padding="2" axis_title_text_border_color="black" axis_title_text_border_width="thin" axis_title_text_border_style="none" axis_label_font_style="normal" axis_label_font_weight="normal" axis_label_text_decoration="none" axis_label_text_align="center" axis_label_vertical_text_align="center" axis_label_font_color="black" axis_label_font_family="Arial" axis_label_font_size="9pt" axis_label_text_padding="2" axis_label_text_border_color="black" axis_label_text_border_width="thin" axis_label_text_border_style="none">
+						<isee:series_styles>
+							<isee:series_style color="blue" thickness="1"/>
+							<isee:series_style color="red" thickness="1" pen_style="dot_dashed"/>
+							<isee:series_style color="fuchsia" thickness="1" pen_style="dotted"/>
+							<isee:series_style color="#008F44" thickness="1" pen_style="dashed"/>
+							<isee:series_style color="#FF7F00" thickness="1"/>
+							<isee:series_style color="#7F00FF" thickness="1" pen_style="dot_dashed"/>
+							<isee:series_style color="#0CA0FF" thickness="1" pen_style="dotted"/>
+							<isee:series_style color="lime" thickness="1" pen_style="dashed"/>
+							<isee:series_style color="#FF007F" thickness="1"/>
+							<isee:series_style color="aqua" thickness="1" pen_style="dot_dashed"/>
+							<isee:series_style color="#F586FF" thickness="1" pen_style="dotted"/>
+							<isee:series_style color="black" thickness="1" pen_style="dashed"/>
+							<isee:series_style color="#C8C8C8" thickness="1"/>
+						</isee:series_styles>
+					</graph>
+					<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="summed" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
+				</style>
+				<aux x="310.708" y="180.5" width="69.25" height="14" name="Housing Supply"/>
+				<aux x="510.208" y="194.5" width="57.25" height="14" name="Interest Rate"/>
+				<aux x="204.208" y="253.5" width="62.25" height="14" name="Housing Price"/>
+				<aux x="266.458" y="368.5" width="88.25" height="14" name="Housing Affordability"/>
+				<connector uid="1" polarity="-" isee:polarity_placement="outside" angle="181.397">
+					<from>Housing_Supply</from>
+					<to>Housing_Price</to>
+				</connector>
+				<connector uid="2" polarity="-" isee:polarity_placement="inside" angle="274.487">
+					<from>Housing_Price</from>
+					<to>Housing_Affordability</to>
+				</connector>
+				<aux x="412.958" y="302.5" width="75.25" height="14" name="Housing Demand"/>
+				<aux x="386.958" y="246.667" width="111.25" height="14" name="Incentive for Supply Policy"/>
+				<aux x="592.833" y="382.5" width="82.25" height="14" name="Disposable Income"/>
+				<aux x="568.125" y="478.167" width="77.25" height="14" name="Economic Growth"/>
+				<aux x="441.958" y="591.5" width="68.25" height="14" name="Rental Demand"/>
+				<aux x="745.25" y="457.667" width="55.25" height="14" name="Rental Price"/>
+				<aux x="468.042" y="425.167" width="48.25" height="14" name="Population"/>
+				<aux x="354.708" y="464.167" width="53.25" height="14" name="Immigration"/>
+				<connector uid="3" polarity="+" isee:polarity_placement="outside" angle="356.328">
+					<from>Housing_Affordability</from>
+					<to>Housing_Demand</to>
+				</connector>
+				<connector uid="4" polarity="+" isee:polarity_placement="outside" angle="98.1541">
+					<from>Housing_Demand</from>
+					<to>Incentive_for_Supply_Policy</to>
+				</connector>
+				<connector uid="5" polarity="+" isee:polarity_placement="outside" delay_mark="true" angle="107.819">
+					<from>Incentive_for_Supply_Policy</from>
+					<to>Housing_Supply</to>
+				</connector>
+				<isee:loop_indicator text="R1" orientation="counter_clockwise" uid="6" x="343.333" y="260.667" width="30" height="30"/>
+				<connector uid="8" polarity="-" isee:polarity_placement="outside" angle="123.147">
+					<from>Interest_Rate</from>
+					<to>Housing_Supply</to>
+				</connector>
+				<isee:loop_indicator text="B4" orientation="counter_clockwise" uid="9" x="453" y="172.5" width="30" height="30"/>
+				<connector uid="10" polarity="+" isee:polarity_placement="outside" angle="30.9946">
+					<from>Housing_Demand</from>
+					<to>Interest_Rate</to>
+				</connector>
+				<connector uid="14" polarity="+" isee:polarity_placement="inside" angle="281.407">
+					<from>Housing_Affordability</from>
+					<to>Immigration</to>
+				</connector>
+				<connector uid="15" polarity="+" isee:polarity_placement="inside" angle="348.887">
+					<from>Immigration</from>
+					<to>Population</to>
+				</connector>
+				<connector uid="16" polarity="+" isee:polarity_placement="inside" angle="43.3634">
+					<from>Population</from>
+					<to>Housing_Demand</to>
+				</connector>
+				<isee:loop_indicator text="R4" orientation="counter_clockwise" uid="17" x="419.708" y="387.167" width="30" height="30"/>
+				<connector uid="18" polarity="-" isee:polarity_placement="outside" angle="255.446">
+					<from>Housing_Affordability</from>
+					<to>Rental_Demand</to>
+				</connector>
+				<connector uid="19" polarity="+" isee:polarity_placement="outside" angle="354.666">
+					<from>Rental_Demand</from>
+					<to>Rental_Price</to>
+				</connector>
+				<connector uid="20" polarity="+" isee:polarity_placement="outside" angle="114.416">
+					<from>Rental_Price</from>
+					<to>Housing_Demand</to>
+				</connector>
+				<isee:loop_indicator text="R2" orientation="counter_clockwise" uid="21" x="692.708" y="447.167" width="30" height="30"/>
+				<connector uid="22" color="#AA0000" font_color="#AA0000" polarity="+" isee:polarity_placement="outside" delay_mark="true" angle="311.257">
+					<from>Immigration</from>
+					<to>Economic_Growth</to>
+				</connector>
+				<connector uid="23" color="#AA0000" font_color="#AA0000" polarity="+" isee:polarity_placement="outside" angle="36.9539">
+					<from>Economic_Growth</from>
+					<to>Disposable_Income</to>
+				</connector>
+				<connector uid="24" color="#AA0000" font_color="#AA0000" polarity="+" isee:polarity_placement="outside" angle="131.37">
+					<from>Disposable_Income</from>
+					<to>Housing_Demand</to>
+				</connector>
+				<isee:loop_indicator text="R3" orientation="counter_clockwise" uid="25" x="551.833" y="417.167" width="30" height="30"/>
+				<connector uid="26" color="#AA0000" font_color="#AA0000" polarity="+" isee:polarity_placement="outside" angle="199.983">
+					<from>Housing_Demand</from>
+					<to>Housing_Price</to>
+				</connector>
+				<isee:loop_indicator text="B2" orientation="counter_clockwise" uid="27" x="286.375" y="328.5" width="30" height="30"/>
+				<connector uid="28" color="#AA007F" font_color="#AA007F" polarity="-" isee:polarity_placement="outside" angle="63.4349">
+					<from>Housing_Affordability</from>
+					<to>Incentive_for_Supply_Policy</to>
+				</connector>
+				<isee:loop_indicator text="B3" orientation="counter_clockwise" uid="29" x="289.375" y="260.667" width="30" height="30"/>
+				<aux x="73.4583" y="253.5" width="53.25" height="14" name="Price Policy">
+					<shape type="name_only"/>
+				</aux>
+				<isee:loop_indicator text="B1" orientation="clockwise" uid="30" x="148.083" y="281.667" width="30" height="30"/>
+				<connector uid="32" polarity="-" isee:polarity_placement="inside" angle="54.5534">
+					<from>Price_Policy</from>
+					<to>Housing_Price</to>
+				</connector>
+				<aux x="94.9583" y="368.5" width="104.25" height="14" name="Incentive for Price Policy"/>
+				<connector uid="33" polarity="+" isee:polarity_placement="outside" angle="151.389">
+					<from>Incentive_for_Price_Policy</from>
+					<to>Price_Policy</to>
+				</connector>
+				<text_box uid="34" x="35.208" y="141.5" width="185" height="66">Price Policy - Umbrella term that refers to all government policies enacted to impact housing price, e.g. CPF grants</text_box>
+				<text_box uid="35" x="581.833" y="202.5" width="185" height="74.167">Supply Policy - Umbrella term that refers to all government policies enact to increase housing supply e.g. Land Reclamation, Land allocation </text_box>
+				<connector uid="36" polarity="+" isee:polarity_placement="inside" angle="266.28">
+					<from>Housing_Price</from>
+					<to>Incentive_for_Price_Policy</to>
+				</connector>
+			</view>
+		</views>
+	</model>
+</xmile>
+

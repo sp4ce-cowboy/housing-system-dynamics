@@ -95,7 +95,7 @@ Sensitivity runs on four levers:
 - **Leverage proposed:** widen grant eligibility for low-income singles (a lower income ceiling,
   and eligibility below age 35).
 
-## Skills shown
+## Skills covered
 
 | Skill | Where it shows | Docs |
 |---|---|---|
